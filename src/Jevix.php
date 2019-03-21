@@ -764,14 +764,6 @@ class Jevix
             }
         }
 
-        if (!empty($this->autoReplace)) {
-            $this->text = str_ireplace($this->autoReplace['from'], $this->autoReplace['to'], $this->text);
-        }
-
-        if (!empty($replacements)) {
-            $this->text = str_replace(array_keys($replacements), $replacements, $this->text);
-        }
-
         // Авто растановка BR?
         if ($this->isAutoBrMode) {
             $this->text = preg_replace('/<br\/?>(\r\n|\n\r|\n)?/ui', $this->nl, $this->text);
@@ -789,6 +781,14 @@ class Jevix
         $this->skipSpaces();
         $this->anyThing($content);
         $errors = $this->errors;
+        
+        if (!empty($this->autoReplace)){
+			$content = str_ireplace($this->autoReplace['from'], $this->autoReplace['to'], $content);
+		}
+
+		if (!empty($replacements)) {
+			$content = str_replace(array_keys($replacements), $replacements, $content);
+		}
 
         return $content;
     }
