@@ -1,5 +1,6 @@
 {
   "name": "agelxnash/jevix",
+  "license": "MIT",
   "description": "Library for html filtering",
   "authors": [
     {"name": "ur001"},
