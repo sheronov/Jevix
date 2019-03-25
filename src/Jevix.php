@@ -781,7 +781,7 @@ class Jevix
         $this->skipSpaces();
         $this->anyThing($content);
         $errors = $this->errors;
-        
+
         if (!empty($this->autoReplace)){
 			$content = str_ireplace($this->autoReplace['from'], $this->autoReplace['to'], $content);
 		}
@@ -2116,8 +2116,6 @@ class Jevix
             }
 
             $href = 'http://' . $url;
-
-            return true;
         } elseif ($this->matchStr('https://')) {
             while ($this->curChClass & $urlChMask) {
                 $url .= $this->curCh;
@@ -2131,8 +2129,6 @@ class Jevix
             }
 
             $href = 'https://' . $url;
-
-            return true;
         } elseif ($this->matchStr('www.')) {
             while ($this->curChClass & $urlChMask) {
                 $url .= $this->curCh;
