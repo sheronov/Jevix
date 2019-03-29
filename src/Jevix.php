@@ -782,13 +782,13 @@ class Jevix
         $this->anyThing($content);
         $errors = $this->errors;
 
-        if (!empty($this->autoReplace)){
-			$content = str_ireplace($this->autoReplace['from'], $this->autoReplace['to'], $content);
-		}
+        if (!empty($this->autoReplace)) {
+            $content = str_ireplace($this->autoReplace['from'], $this->autoReplace['to'], $content);
+        }
 
-		if (!empty($replacements)) {
-			$content = str_replace(array_keys($replacements), $replacements, $content);
-		}
+        if (!empty($replacements)) {
+            $content = str_replace(array_keys($replacements), $replacements, $content);
+        }
 
         return $content;
     }
@@ -1523,29 +1523,20 @@ class Jevix
                                 $this->eror('URI: Первый символ адреса должен быть буквой или цифрой');
                                 continue(2);
                             } // Пропускаем относительные url и ipv6
-                            elseif (preg_match('/^(\.\.\/|\/)/ui', $value)) {
+                            elseif (preg_match('/^(\.\.\/|\/|\.|\#)/ui', $value)) {
                                 break;
                             }
 
-                            // HTTP в начале если нет
+                            // Если нет указания протокола:
                             $sProtocol = '(' . $this->_getAllowedProtocols('#link') . ')' . ($this->_getSkipProtocol('#link') ? '?' : '');
-                            if (!preg_match('/^' . $sProtocol . '/ui', $value)
-                                && !preg_match('/^(\/|\#|\.)/ui', $value)
-                                && !preg_match('/.+@.+\..+/i', $value)
-                            ) {
-                                $value = 'http://' . $value;
-                            } elseif (preg_match('/.+@.+\..+/i', $value)) {
-                                // Но нет протокола - добавляем
-                                if (!preg_match('/^(.*?):/ui', $value)) {
+                            if (!preg_match('/^' . $sProtocol . '/ui', $value)) {
+                                // Нет слэшей и адрес похож на почту
+                                if (preg_match('/.+@.+\..+/i', $value) && !preg_match('/\//', $value)) {
                                     $value = 'mailto:' . $value;
                                 }
-                            } // Если нет указания протокола:
-                            elseif (!preg_match('/^(http|https|ftp):\/\//ui', $value)) {
-                                // Но адрес похож на домен
-                                if (preg_match('/\.[a-z]{2,}+/ui', $value)) {
+                                // Или адрес похож на домен
+                                elseif (preg_match('/\.[a-z]{2,}+/ui', $value)) {
                                     $value = 'http://' . $value;
-                                } else {
-                                    //$value = '/'.$value;
                                 }
                             }
                             break;
@@ -1556,7 +1547,7 @@ class Jevix
                                 $this->eror('Попытка вставить JavaScript в пути к изображению');
                                 continue(2);
                             } // Пропускаем относительные url и ipv6
-                            elseif (preg_match('/^(\.\.\/|\/)/ui', $value)) {
+                            elseif (preg_match('/^(\.\.\/|\/|\.)/ui', $value)) {
                                 // HTTP в начале если нет
                                 $sProtocol = '(' . $this->_getAllowedProtocols('#image') . ')' . ($this->_getSkipProtocol('#image') ? '?' : '');
                                 if (!preg_match('@^' . $sProtocol . '\/\/@ui', $value) && !preg_match('/^\//ui',
@@ -1569,8 +1560,6 @@ class Jevix
                                 // Но адрес похож на домен с картинкой, то добавляем http
                                 if (preg_match('/\.[a-z]{2,}+.*\./ui', $value)) {
                                     $value = 'http://' . $value;
-                                } else {
-                                    //$value = '/'.$value;
                                 }
                             }
                             break;
